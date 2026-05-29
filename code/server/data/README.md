@@ -1,0 +1,3 @@
+This data was acquired from [The Carpentries](https://carpentries.org/). The original data is licensed under a [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/).
+
+The data was pulled on May 29, 2026 from their GitHub repo for the [Python Novice Inflammation Workshop](https://github.com/swcarpentry/python-novice-inflammation) and more details on their license can be found there.

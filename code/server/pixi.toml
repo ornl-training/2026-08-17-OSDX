@@ -1,0 +1,16 @@
+[workspace]
+authors = ["John Duggan <dugganjw@ornl.gov>"]
+channels = ["conda-forge"]
+name = "server"
+platforms = ["osx-arm64", "osx-64", "linux-64"]
+version = "0.1.0"
+
+[tasks]
+server = "fastapi dev --host 0.0.0.0"
+
+[dependencies]
+python = ">=3.11"
+pandas = ">=3.0.3,<4"
+
+[pypi-dependencies]
+fastapi = { version = ">=0.136.3, <0.137", extras = ["standard"] }
