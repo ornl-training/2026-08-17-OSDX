@@ -1,0 +1,398 @@
+<title>How a Full-Stack Web App Works</title>
+<style>
+  :root {
+    /* Fixed black-on-white palette — this is a print handout, not a themed
+       screen page, so it does not follow the viewer's light/dark preference. */
+    --bg: #FFFFFF;
+    --fg: #000000;
+    --accent: #000000;
+    --muted: #666666;
+    --panel: #F0F0F0;
+    --border: rgba(0,0,0,0.35);
+
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-serif);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .sheet {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 40px 28px 60px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .titleblock {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    border-bottom: 2px solid var(--fg);
+    padding-bottom: 18px;
+    margin-bottom: 8px;
+  }
+
+  .titleblock h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(26px, 4vw, 36px);
+    line-height: 1.1;
+    margin: 6px 0 8px;
+    text-wrap: balance;
+  }
+
+  .titleblock .subtitle {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 46ch;
+  }
+
+  .titlebox {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    border: 1.5px solid var(--fg);
+    display: grid;
+    grid-template-columns: auto auto;
+    flex-shrink: 0;
+  }
+  .titlebox div {
+    padding: 5px 12px;
+    border-top: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .titlebox div:nth-child(-n+2) { border-top: none; }
+  .titlebox .k {
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    border-right: 1px solid var(--border);
+  }
+  .titlebox .v { font-variant-numeric: tabular-nums; }
+
+  .intro {
+    font-size: 17px;
+    line-height: 1.6;
+    margin: 26px 0 36px;
+  }
+
+  figure.diagram-fig { margin: 0 0 8px; }
+
+  .diagram-scroll {
+    overflow-x: auto;
+    border: 1.5px solid var(--fg);
+    background: var(--bg);
+  }
+
+  .diagram-scroll svg {
+    display: block;
+    width: 100%;
+    min-width: 880px;
+    height: auto;
+  }
+
+  .diagram-scroll text { font-family: var(--font-mono); }
+
+  .node-rect { fill: var(--panel); stroke: var(--fg); stroke-width: 2; }
+  .node-role { fill: var(--fg); font-weight: 700; font-size: 15px; letter-spacing: 0.05em; }
+  .node-desc { fill: var(--muted); font-size: 12px; font-family: var(--font-serif); font-style: italic; }
+  .node-rule { stroke: var(--border); stroke-width: 1; }
+  .node-star { fill: var(--accent); font-size: 12px; font-weight: 700; text-decoration: underline; }
+  .node-alt-label { fill: var(--muted); font-size: 9px; letter-spacing: 0.1em; }
+  .node-alt { fill: var(--fg); font-size: 11px; opacity: 0.72; }
+  .flow-req { stroke: var(--fg); stroke-width: 2; fill: none; }
+  .flow-res { stroke: var(--muted); stroke-width: 2; fill: none; stroke-dasharray: 4 3; }
+
+  figcaption {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 10px;
+    max-width: 100ch;
+  }
+
+  .legend {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    margin: 14px 0 40px;
+    color: var(--muted);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .swatch { width: 11px; height: 11px; border: 1.5px solid var(--fg); flex-shrink: 0; }
+  .swatch.accent { background: var(--accent); border-color: var(--accent); }
+  .swatch.alt { background: transparent; }
+  .swatch.build { background: #000000; border-color: #000000; }
+  .swatch.run {
+    background: repeating-linear-gradient(45deg, #000000 0, #000000 1px, transparent 1px, transparent 5px);
+    border-color: #000000;
+  }
+
+  /* Zone A: the piece this workshop actually builds — inverted so it reads
+     as "highlighted" without introducing color. */
+  .build .node-rect { fill: #000000; stroke: #000000; }
+  .build .node-role,
+  .build .node-star,
+  .build .node-alt { fill: #FFFFFF; }
+  .build .node-desc,
+  .build .node-alt-label { fill: #CCCCCC; }
+  .build .node-rule { stroke: rgba(255,255,255,0.45); }
+
+  /* Zone B: pieces the workshop runs but does not build — a cross-hatch
+     fill, the technical-drawing convention for "pre-existing material." */
+  .run .node-rect { fill: url(#hatch); }
+
+  .zone-bracket { stroke: var(--fg); stroke-width: 1.5; }
+  .zone-label { fill: var(--fg); font-family: var(--font-mono); font-weight: 700; font-size: 13px; letter-spacing: 0.04em; }
+
+  h2.section {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin: 0 0 20px;
+  }
+
+  ol.steps {
+    list-style: none;
+    counter-reset: step;
+    padding: 0;
+    margin: 0 0 30px;
+    display: grid;
+    gap: 14px;
+  }
+  ol.steps li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 14px;
+    align-items: baseline;
+    font-size: 15.5px;
+    line-height: 1.55;
+  }
+  ol.steps li::before {
+    content: counter(step);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--bg);
+    background: var(--fg);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: start;
+    font-variant-numeric: tabular-nums;
+  }
+  ol.steps b { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.03em; }
+  ol.steps code {
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    background: var(--panel);
+    padding: 1px 5px;
+    border: 1px solid var(--border);
+  }
+
+  .closing {
+    font-size: 15px;
+    line-height: 1.6;
+    font-style: italic;
+    color: var(--muted);
+    max-width: 68ch;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+  }
+
+  @media (max-width: 620px) {
+    .titleblock { align-items: flex-start; }
+    .titlebox { font-size: 10px; }
+  }
+
+  @media print {
+    @page { size: letter landscape; margin: 0.45in; }
+
+    body { background: var(--bg); }
+
+    .sheet { max-width: 100%; padding: 0; }
+
+    .diagram-scroll { overflow: visible; border-width: 1px; }
+    .diagram-scroll svg { min-width: 0; }
+
+    .intro { margin: 18px 0 24px; }
+
+    .titleblock,
+    figure.diagram-fig,
+    .legend,
+    h2.section,
+    ol.steps li {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    h2.section { break-after: avoid; page-break-after: avoid; }
+  }
+</style>
+
+<div class="sheet">
+
+  <div class="titleblock">
+    <div>
+      <div class="eyebrow">OSDX 2026, Oak Ridge National Laboratory</div>
+      <h1>Introduction to Web Development</h1>
+      <div class="subtitle">John Duggan & Greg Cage</div>
+      <div class="subtitle">August 17th, 2026</div>
+    </div>
+  </div>
+
+  <p class="intro">
+    This workshop introduces the core elements of developing a complete web-based, or full stack, software application.
+    Below is the typical architecture for such a full-stack software application. Note that due to time limitations we
+    will only be building the front-end portion of the app during this tutorial. We provide a functional back-end that is
+    ready to use out of the box, and we encourage you to tinker with this back-end to learn more.
+  </p>
+
+  <figure class="diagram-fig">
+    <div class="diagram-scroll">
+      <svg viewBox="0 0 1500 460" role="img" aria-label="Diagram of a six-stage full-stack request cycle: Browser, Frontend App, Web Server, App Server, Data Access, and Data Store, connected by a solid request arrow flowing left to right and a dashed response arrow flowing back right to left. Each stage lists the technology this workshop uses, starred, alongside a common alternative. The Frontend App stage is highlighted solid black and bracketed 'You'll build this.' The App Server, Data Access, and Data Store stages are highlighted with a cross-hatch fill and bracketed 'You'll run these — not build them.'">
+        <defs>
+          <marker id="arrowFg" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" style="fill:var(--fg)"/>
+          </marker>
+          <marker id="arrowMuted" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/>
+          </marker>
+          <pattern id="hatch" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <rect width="8" height="8" fill="#FFFFFF"/>
+            <line x1="0" y1="0" x2="0" y2="8" stroke="#000000" stroke-width="1" opacity="0.3"/>
+          </pattern>
+        </defs>
+
+        <!-- ============ NODE 1: BROWSER ============ -->
+        <g>
+          <rect x="50" y="150" width="185" height="220" class="node-rect"/>
+          <text x="142.5" y="184" text-anchor="middle" class="node-role">BROWSER</text>
+          <line x1="66" y1="196" x2="219" y2="196" class="node-rule"/>
+          <text x="142.5" y="216" text-anchor="middle" class="node-desc">Handles user</text>
+          <text x="142.5" y="233" text-anchor="middle" class="node-desc">interaction</text>
+          <text x="142.5" y="285" text-anchor="middle" class="node-alt">Chrome · Firefox</text>
+          <text x="142.5" y="301" text-anchor="middle" class="node-alt">Safari · Edge</text>
+        </g>
+
+        <!-- gap 1 arrows -->
+        <line x1="239" y1="245" x2="289" y2="245" class="flow-req" marker-end="url(#arrowFg)"/>
+        <line x1="289" y1="295" x2="239" y2="295" class="flow-res" marker-end="url(#arrowMuted)"/>
+
+        <!-- ============ NODE 2: FRONTEND APP ============ -->
+        <g class="build">
+          <rect x="293" y="150" width="185" height="220" class="node-rect"/>
+          <text x="385.5" y="184" text-anchor="middle" class="node-role">FRONTEND APP</text>
+          <line x1="309" y1="196" x2="462" y2="196" class="node-rule"/>
+          <text x="385.5" y="216" text-anchor="middle" class="node-desc">Provides instructions</text>
+          <text x="385.5" y="233" text-anchor="middle" class="node-desc">to the browser</text>
+          <text x="385.5" y="280" text-anchor="middle" class="node-star">Next.js / React</text>
+          <text x="385.5" y="301" text-anchor="middle" class="node-alt">Vue · plain JS</text>
+        </g>
+
+        <!-- gap 2 arrows -->
+        <line x1="482" y1="245" x2="532" y2="245" class="flow-req" marker-end="url(#arrowFg)"/>
+        <line x1="532" y1="295" x2="482" y2="295" class="flow-res" marker-end="url(#arrowMuted)"/>
+
+        <!-- ============ NODE 3: WEB SERVER ============ -->
+        <g>
+          <rect x="536" y="150" width="185" height="220" class="node-rect"/>
+          <text x="628.5" y="184" text-anchor="middle" class="node-role">WEB SERVER</text>
+          <line x1="552" y1="196" x2="705" y2="196" class="node-rule"/>
+          <text x="628.5" y="216" text-anchor="middle" class="node-desc">Handles networking</text>
+          <text x="628.5" y="233" text-anchor="middle" class="node-desc">between front-end</text>
+          <text x="628.5" y="250" text-anchor="middle" class="node-desc">and back-end</text>
+          <text x="628.5" y="280" text-anchor="middle" class="node-star">nginx</text>
+          <text x="628.5" y="301" text-anchor="middle" class="node-alt">Apache</text>
+        </g>
+
+        <!-- gap 3 arrows -->
+        <line x1="725" y1="245" x2="775" y2="245" class="flow-req" marker-end="url(#arrowFg)"/>
+        <line x1="775" y1="295" x2="725" y2="295" class="flow-res" marker-end="url(#arrowMuted)"/>
+
+        <!-- ============ NODE 4: APP SERVER ============ -->
+        <g class="run">
+          <rect x="779" y="150" width="185" height="220" class="node-rect"/>
+          <text x="871.5" y="184" text-anchor="middle" class="node-role">APP SERVER</text>
+          <line x1="795" y1="196" x2="948" y2="196" class="node-rule"/>
+          <text x="871.5" y="216" text-anchor="middle" class="node-desc">Runs backend logic,</text>
+          <text x="871.5" y="233" text-anchor="middle" class="node-desc">exposes API routes</text>
+          <text x="871.5" y="280" text-anchor="middle" class="node-star">FastAPI</text>
+          <text x="871.5" y="301" text-anchor="middle" class="node-alt">Express · Django</text>
+        </g>
+
+        <!-- gap 4 arrows -->
+        <line x1="968" y1="245" x2="1018" y2="245" class="flow-req" marker-end="url(#arrowFg)"/>
+        <line x1="1018" y1="295" x2="968" y2="295" class="flow-res" marker-end="url(#arrowMuted)"/>
+
+        <!-- ============ NODE 5: DATA ACCESS ============ -->
+        <g class="run">
+          <rect x="1022" y="150" width="185" height="220" class="node-rect"/>
+          <text x="1114.5" y="184" text-anchor="middle" class="node-role">DATA ACCESS</text>
+          <line x1="1038" y1="196" x2="1191" y2="196" class="node-rule"/>
+          <text x="1114.5" y="216" text-anchor="middle" class="node-desc">Reads and shapes</text>
+          <text x="1114.5" y="233" text-anchor="middle" class="node-desc">the raw data</text>
+          <text x="1114.5" y="280" text-anchor="middle" class="node-star">pandas</text>
+          <text x="1114.5" y="301" text-anchor="middle" class="node-alt">SQLAlchemy · Django ORM</text>
+        </g>
+
+        <!-- gap 5 arrows -->
+        <line x1="1211" y1="245" x2="1261" y2="245" class="flow-req" marker-end="url(#arrowFg)"/>
+        <line x1="1261" y1="295" x2="1211" y2="295" class="flow-res" marker-end="url(#arrowMuted)"/>
+
+        <!-- ============ NODE 6: DATA STORE ============ -->
+        <g class="run">
+          <rect x="1265" y="150" width="185" height="220" class="node-rect"/>
+          <text x="1357.5" y="184" text-anchor="middle" class="node-role">DATA STORE</text>
+          <line x1="1281" y1="196" x2="1434" y2="196" class="node-rule"/>
+          <text x="1357.5" y="216" text-anchor="middle" class="node-desc">Where the data</text>
+          <text x="1357.5" y="233" text-anchor="middle" class="node-desc">lives at rest</text>
+          <text x="1357.5" y="280" text-anchor="middle" class="node-star">CSV files</text>
+          <text x="1357.5" y="301" text-anchor="middle" class="node-alt">PostgreSQL · SQLite</text>
+        </g>
+
+        <!-- ============ ZONE BRACKET: BUILD (Frontend App) ============ -->
+        <line x1="293" y1="376" x2="293" y2="392" class="zone-bracket"/>
+        <line x1="478" y1="376" x2="478" y2="392" class="zone-bracket"/>
+        <line x1="293" y1="392" x2="478" y2="392" class="zone-bracket"/>
+        <text x="385.5" y="412" text-anchor="middle" class="zone-label">YOU'LL BUILD THIS</text>
+
+        <!-- ============ ZONE BRACKET: RUN, NOT BUILD (App Server → Data Store) ============ -->
+        <line x1="779" y1="376" x2="779" y2="392" class="zone-bracket"/>
+        <line x1="1450" y1="376" x2="1450" y2="392" class="zone-bracket"/>
+        <line x1="779" y1="392" x2="1450" y2="392" class="zone-bracket"/>
+        <text x="1114.5" y="412" text-anchor="middle" class="zone-label">YOU'LL RUN THESE — NOT BUILD THEM</text>
+
+      </svg>
+    </div>
+    <figcaption>
+      The solid thread runs the request left to right, browser to storage; the dashed thread
+      carries the response back the same route.
+    </figcaption>
+  </figure>
+</div>
