@@ -21,7 +21,7 @@ export default async function Home() {
         <h1 className="mb-4">Web Development Tutorial</h1>
         <div>
           <h2 className="mb-4">Select A File to View</h2>
-          <ul className="grid grid-cols-3 gap-4">
+          <ul className="grid grid-cols-1 md:grid-cols-3 grid gap-4">
             {filenames.map((filename, index) => (
               <Link key={index} className="p-4 border cursor-pointer" href={`/data/${filename}/`} target="_blank">
                 {filename}
