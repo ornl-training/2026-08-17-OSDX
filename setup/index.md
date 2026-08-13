@@ -1,65 +1,40 @@
 ---
 layout: page
-title: Testing Setup
+title: Setup
 root: ..
 ---
 
-This directory contains scripts for testing your machine to make sure
-you have the software you'll need for your workshop installed.  To use
-these scripts:
+# Prerequisites
 
-1.  Download [swc-installation-test-1.py](swc-installation-test-1.py).
+This lesson assumes you have a fundamental understanding of working with the UNIX shell. If you don't, then we recommend you use the
+[The Unix Shell lesson](https://swcarpentry.github.io/shell-novice/) provided by Software Carpentry before beginning this material.
 
-2.  Run it from the shell:
+# Required Software
 
-    ~~~
-    $ python swc-installation-test-1.py
-    Passed
-    ~~~
+This lesson requires you to install [Pixi](https://pixi.prefix.dev/latest/) and [Node.js](https://nodejs.org/en) to get started. While
+not necessary, it's also recommended that you have an IDE such as [VSCode](https://code.visualstudio.com/) installed for modifying the
+files used in this lesson.
 
-3.  Download [swc-installation-test-2.py](swc-installation-test-2.py).
+However you install the software, once done you should be able to run the following commands:
 
-4.  Run it from the shell:
+```command
+pixi --version
+```
 
-    ~~~
-    $ python swc-installation-test-2.py
-    check virtual-shell...  pass
-    ...
-    Successes:
+```output
+pixi 0.62.2
+```
 
-    virtual-shell Bourne Again Shell (bash) 4.2.37
-    ...
-    ~~~
+```command
+node --version
+npm --version
+```
 
-    If you see something like:
+```output
+v24.12.0
+11.6.2
+```
 
-    ~~~
-    $ python swc-installation-test-2.py
-    check virtual-shell...  fail
-    ...
-    check for command line shell (virtual-shell) failed:
-      command line shell (virtual-shell) requires at least one of the following dependencies
-      For instructions on installing an up-to-date version, see
-      http://software-carpentry.org/setup/
-      causes:
-      check for Bourne Again Shell (bash) failed:
-        could not find 'bash' executable for Bourne Again Shell (bash)
-        For instructions on installing an up-to-date version, see
-        http://software-carpentry.org/setup/
-    ...
-    ~~~
+You may see slightly different versions, but these are generally unlikely to cause issues following the lesson materials.
 
-    follow the suggestions to try and install any missing software.  For
-    additional troubleshooting information, you can use the `--verbose`
-    option:
-
-    ~~~
-    $ python swc-installation-test-2.py --verbose
-    check virtual-shell...  fail
-    ...
-    ==================
-    System information
-    ==================
-    os.name            : posix
-    ...
-    ~~~
+{% include links.md %}
