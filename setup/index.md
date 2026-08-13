@@ -17,24 +17,30 @@ files used in this lesson.
 
 However you install the software, once done you should be able to run the following commands:
 
+COMMAND:
 ```command
 pixi --version
 ```
 
+OUTPUT:
 ```output
 pixi 0.62.2
 ```
 
+COMMAND:
 ```command
 node --version
 npm --version
 ```
 
+OUTPUT:
 ```output
 v24.12.0
 11.6.2
 ```
 
 You may see slightly different versions, but these are generally unlikely to cause issues following the lesson materials.
+
+[First Episode](01-html_css_js/index.html)
 
 {% include links.md %}

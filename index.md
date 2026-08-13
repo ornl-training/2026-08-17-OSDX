@@ -385,4 +385,4 @@ The lesson taught in this workshop is being piloted and a precise schedule is ye
 
 <hr/>
 
-<h2 id="setup-link"><a href="/setup/index.html">Setup</a></h2>
+<h2 id="setup-link"><a href="setup/index.html">Setup</a></h2>
