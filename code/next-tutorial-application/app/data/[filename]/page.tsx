@@ -1,4 +1,4 @@
-import InflammationChart, { DailyStats } from "./inflammation-chart"
+import InflammationChart, { DailyStats } from "../../../components/inflammation-chart"
 
 type Dataset = {
   columns: number[]
@@ -39,18 +39,13 @@ export default async function DataView({ params }: { params: Promise<{ filename:
   const dataset = await getDataset(filename as string)
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <h1 className="mb-4">Web Development Tutorial</h1>
-        <div className="w-full">
-          <h2 className="mb-4">{filename}</h2>
-          {dataset === null ? (
-            <p>Data file not found.</p>
-          ) : (
-            <InflammationChart data={toDailyStats(dataset)} />
-          )}
-        </div>
-      </main>
+    <div className="w-full">
+      <h2 className="mb-4">{filename}</h2>
+      {dataset === null ? (
+        <p>Data file not found.</p>
+      ) : (
+        <InflammationChart data={toDailyStats(dataset)} />
+      )}
     </div>
   );
 }

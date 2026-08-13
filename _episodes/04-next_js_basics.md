@@ -30,38 +30,39 @@ pnpm run dev
 
 Next.js supports hot-reload, meaning that any changes you make will be automatically reflected in your browser after you save them. If you do not see your changes for some reason, then there is probably a syntax error somewhere in your code, and Next.js will provide details about the particular error. If there are no errors displayed in your browser, and you still do not see any changes, try stopping your application and running the above command again.
 
-Now, in order to create a new route or web page, all that we have to do is create a new directory with the name that we want for that page. Let's go with `user` for now. In your app directory, create a new directory called `user`.
+Now, in order to create a new route or web page, all that we have to do is create a new directory with the name that we want for that page. Let's go with `data` for now. In your app directory, create a new directory called `data`.
 
 ~~~
 cd app
-mkdir user
+mkdir data
 ~~~
 {: .language-bash}
 
-With that, we have added a new route. However, since we don't have any content for this route yet, it will not yet be publically accessible. In order to create content for this page, we should create a `page.tsx` file in this folder. Every route folder that you create must have a `page.tsx` file, called a page file. This is where your main layout and content for that route will live. Let's add the following to our page file that we have created in our `app/user` directory. 
+With that, we have added a new route. However, since we don't have any content for this route yet, it will not yet be publically accessible. In order to create content for this page, we should create a `page.tsx` file in this folder. Every route folder that you create must have a `page.tsx` file, called a page file. This is where your main layout and content for that route will live. Let's add the following to our page file that we have created in our `app/data` directory. 
 
 ~~~
 export default function Page() {
 	return (
 		<div>
-			<h1>Hello Next.js!</h1>
+			<h1>Web Development Tutorial</h1>
 		</div>
 	);
 }
 ~~~
 
-Save that file. Now we can go to `http://localhost:3000/user`, and we should see our content. If you edit the text in the `<h1>` tag, and then save those changes, you should see them reflected in your browser immediately. 
+Save that file. Now we can go to `http://localhost:3000/data`, and we should see our content. If you edit the text in the `<h1>` tag, and then save those changes, you should see them reflected in your browser immediately. 
 
 Back in your root `app` directory, you may notice a `layout.tsx` file. This file is fittingly called a layout file. These files describe various layouts that will be reused across several pages, such as headers and footers, and we'll explain more about these in a future episode. 
 
 # React Basics
 
-Heading back to our user page in `app/user/page.tsx`, we can now begin to explain the basics of React. If you remember previous episodes, React is a JavaScript library for writing user interfaces. All of your page and layout files will be written using React. Writing code with React acts as almost a hybrid of writing normal JavaScript/TypeScript code and writing actual HTML. Essentially, React code is grouped into pieces called **components**. These components can then be added to *other* components, which can then be used in *even more* components, creating a nested structure of components, similar to HTML. 
+Heading back to our data page in `app/data/page.tsx`, we can now begin to explain the basics of React. If you remember previous episodes, React is a JavaScript library for writing user interfaces. All of your page and layout files will be written using React. Writing code with React acts as almost a hybrid of writing normal JavaScript/TypeScript code and writing actual HTML. Essentially, React code is grouped into pieces called **components**. These components can then be added to *other* components, which can then be used in *even more* components, creating a nested structure of components, similar to HTML. 
 
-From a syntax perspective a component is defined simply by creating a function that returns some sort of element. Inside your user page file, `app/user/page.tsx`, type following (make sure you type it outside of the function that is already in the file, before or after does not matter however):
+From a syntax perspective a component is defined simply by creating a function that returns some sort of element. Inside your data page file, `app/data/page.tsx`, type following (make sure you type it outside of the function that is already in the file, before or after does not matter however):
 
 ~~~
-function DivComponent() {
+// We will use this element later, hence the name
+function InflammationChart() {
 	return (
 		<div>This is a div.</div>
 	);
@@ -74,21 +75,21 @@ And with that we've created a React component. In order to use our component in 
 export default function Page() {
 	return (
 		<div>
-			<h1>Hello Next.js!</h1>
-			<DivComponent/>
+			<h1>Web Development Tutorial</h1>
+			<InflammationChart/>
 		</div>
 	);
 }
 ~~~
 
-It's important to place this tag representing `DivComponent` *inside* of the div, since these functions cannot *directly* return an array of elements. Instead they return single elements. To be clear however, these single elements act as a container, meaning that they **can contain multiple children inside of them**. The easiest approach is to get used to automatically returning a div element from each of your React components and putting all of the nested content into that div element. 
+It's important to place this tag representing `InflammationChart` *inside* of the div, since these functions cannot *directly* return an array of elements. Instead they return single elements. To be clear however, these single elements act as a container, meaning that they **can contain multiple children inside of them**. The easiest approach is to get used to automatically returning a div element from each of your React components and putting all of the nested content into that div element. 
 
 React components can contain any HTML tag such as divs, anchors, images, buttons, so on and so forth. All React components should start with a capital letter in order to distinguish themselves from these HTML elements. It's also worth mentioning that this syntax of including React components in tags is called `JSX`. It's easiest to think of JSX as an extension of JavaScript/TypeScript that allows you to more or less mix HTML and JavaScript together. 
 
-Another thing to consider is that in Next.js, when reading a page file, the *default* function specifies the component that will be used as the layout for the page. If you experiment with changing the default function in our example to DivComponent, ie:
+Another thing to consider is that in Next.js, when reading a page file, the *default* function specifies the component that will be used as the layout for the page. If you experiment with changing the default function in our example to InflammationChart, ie:
 
 ~~~
-export default function DivComponent() {
+export default function InflammationChart() {
 	return (
 		<div>This is a div.</div>
 	);
@@ -97,8 +98,8 @@ export default function DivComponent() {
 function Page() {
 	return (
 		<div>
-			<h1>Hello Next.js!</h1>
-			<DivComponent/>
+			<h1>Web Development Tutorial</h1>
+			<InflammationChart/>
 		</div>
 	);
 }
@@ -108,32 +109,136 @@ You'll notice that your page is *only* rendering "This is a div." This shows up 
 
 ## React Component Files
 
-In order to facilitate the ability to reuse components, it is common practice to place React components inside of their own files. Inside of the project root directory (the parent directory of the `app` folder), create a `components` directory. The reason we're placing this folder here is to simply give us the freedom to not have to worry about naming conflicts with any of our Next.js logic. In this case, we do not want to define a route called "components," we simply just want to create a normal directory. Inside of `components`, you can structure your files and sub-directories however you want. For this tutorial, we'll just create our components directly in this folder. Create a new TypeScript file called `DivComponent.tsx`. Move the custom `DivComponent` logic from above to this file, making sure to add the `export` keyword as part of the function declaration. 
+In order to facilitate the ability to reuse components, it is common practice to place React components inside of their own files. Inside of the project root directory (the parent directory of the `app` folder), create a `components` directory. The reason we're placing this folder here is to simply give us the freedom to not have to worry about naming conflicts with any of our Next.js logic. In this case, we do not want to define a route called "components," we simply just want to create a normal directory. Inside of `components`, you can structure your files and sub-directories however you want. For this tutorial, we'll just create our components directly in this folder. Create a new TypeScript file called `inflamation-chart.tsx`. Move the custom `InflammationChart` logic from above to this file, making sure to add the `export` keyword as part of the function declaration. 
 
 ~~~
-export function DivComponent() {
+export function InflammationChart() {
 	return (
 		<div>This is a div.</div>
 	);
 }
 ~~~
 
-Back in your `app/user/page.tsx` page file, make sure the definition of `DivComponent` is removed. Then import your React component like you would any other JavaScript code (note this code assumes the same directory structure as described in the previous paragraph).
+Back in your `app/data/page.tsx` page file, make sure the definition of `InflammationChart` is removed. Then import your React component like you would any other JavaScript code (note this code assumes the same directory structure as described in the previous paragraph).
 
 ~~~
-import { DivComponent } from '../../components/DivComponent';
+import { InflammationChart } from '../../../components/inflammation-chart';
 
 export default function Page() {
 	return (
 		<div>
-			<h1>Hello Next.js!</h1>
-			<DivComponent/>
+			<h1>Web Development Tutorial</h1>
+			<InflammationChart/>
 		</div>
 	);
 }
 ~~~
 
-At `http://localhost:3000/user` you should see the same content as before. Now, as an exercise, go back to the root page file at `app/page.tsx`. See if you can include your `DivComponent` file in this page as well. Navigate to `http://localhost:3000/` to see if your changes work. 
+At `http://localhost:3000/data` you should see the same content as before. Now, as an exercise, go back to the root page file at `app/page.tsx`. See if you can include your `InflammationChart` file in this page as well. Navigate to `http://localhost:3000/` to see if your changes work. 
+
+
+## Customizing the Homepage
+
+Now that we know the basics of putting together a React web page, we can go and customize our homepage. Let's go back to `app/page.tsx`. Let's remove everything being returned at the moment and replace it with this:
+
+~~~
+export default async function Home() {
+
+  return (
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+        <h1 className="mb-4">Web Development Tutorial</h1>
+      </main>
+    </div>
+  );
+}
+
+~~~
+
+### Styling in React
+
+Now, you may notice that we're not just specifying a div, but we have also typed some new attributes, particularly `className`. While CSS is a standard way of styling web pages, there are also alternate ways of styling that allow us to not have to worry about including an external stylesheet. One such method is called `TailWind CSS`. Tailwind is a framework that automatically generates and applies CSS properties to our elements depending on the class names that we assign to each element. For example:
+
+~~~
+<div className="flex items-center">Hello.</div>
+~~~
+The above classes specfied inside of the className attribute, `flex` and `items-center` will automatically apply those CSS properties to our element while using Tailwind. Next.js has in-built TailWind support that you can use right out of the box, so it's easy to get started applying styles.
+
+For a full list of properties available, you should check out the official documentation: https://tailwindcss.com/docs/styling-with-utility-classes or one of the many cheat sheets out there available. 
+
+## Creating a Layout
+
+Now that we have some styling, we may realize that the above HTML may look really nice, if it were included in multiple pages. In order to save us from including it in every file, we can instead place this logic inside of a `layout` file. Let's open `app/layout.tsx`. As the layout file in the root of our directory, this file is called the "root layout." This layout must include the `html` and `body` tags, but it's also a nice place for including headers, footers, and `main` tags as well. 
+
+Let's move our current home page logic to inside of the `body` tag.
+
+~~~
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+	    <body className="min-h-full flex flex-col">
+			<div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+				<main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+					<h1 className="mb-4">Web Development Tutorial</h1>
+				</main>
+			</div>
+		</body>
+    </html>
+  );
+}
+
+~~~
+
+Now, that our layout is adjusted, let's make sure that we add back in the `{children}` piece to ensure that next properly puts our content into this layout.
+
+~~~
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+	    <body className="min-h-full flex flex-col">
+			<div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+				<main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+					<h1 className="mb-4">Web Development Tutorial</h1>
+					<div className="flex flex-1 w-full max-w-3xl flex-col">
+						{children}
+					</div>
+				</main>
+			</div>
+		</body>
+    </html>
+  );
+}
+
+~~~
+
+Back in `app/page.tsx`, let's just add some filler for the moment, so that we don't get any errors.
+
+
+~~~
+export default async function Home() {
+
+  return (
+    <div className="m-auto">Hello</div>
+  );
+}
+
+~~~
+
+With this, we're now ready to begin to fill out our app with content.
 
 # Conclusion
 

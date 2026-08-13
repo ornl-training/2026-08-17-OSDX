@@ -176,6 +176,98 @@ background colors to non-text elements, edit the size of those elements, and add
 <!-- A single tag can span multiple lines for to make attributes easier to read.-->
 ~~~
 Don't worry about the exact meanings of each of those properties yet, as we will be exploring 
-them in future episodes about styling. The important take away is that many web pages will have 
+them in the future. The important take away is that many web pages will have 
 many elements (most often `div` elements) in their DOM that are solely there to be styled and 
 act as visual elements on the page. 
+
+## CSS
+Cascading Style Sheets, or CSS, at its core is a language designed to make styling web pages easier, more reproducible, and more extensible. There are several extensions on CSS that you might see, such as SCSS, but all of these more or less server the same purpose.
+
+CSS works by essentially taking the styling "Properties" that we described previously, separating them from the HTML source, and then allowing you to consolidate common properties into resuable blocks of code. These blocks of code are all grouped together in a file called a "Stylesheet."
+
+For example, let's take the code from one of our previous examples.
+
+~~~
+<div id="cool-div" style="color: blue; font-size: 20px;">
+This text will be blue and each character a size of 20px.
+</div>
+~~~  
+
+What if we had several div elements that all needed this styling? We could copy the style attribute and paste it into each div that needed that styling. But then, what if we wanted to update the font size? Going through and updating each element could get tedious very quickly. 
+
+With CSS, we can define what we call a "Rule" that contains the style attributes, and then tell CSS to apply that rule to whatever HTML elements we want. 
+
+~~~
+div {
+	color: blue;
+	font-size: 20px;
+}
+~~~
+
+### Rule Syntax
+
+The syntax for a rule consists of two pieces: at least one "Selector" and then the "Declaration Block" or "Block". The selector in the above example is `div`. Selectors are how we tell CSS which HTML elements to apply this rule to. Here, every single div element in our page will have the specified styling. Everything else in between the braces is our declaration block. This is where we list our styling properties that should apply to each element specified by the selector. In this case, we want the text inside of the div to be the color blue, and then set the size of that text to 20 pixels. 
+
+Now, for our example, we may not want *every* single div in our page to have this styling. In this case, we have several more common selectors that we can use. First, let's assign a class to our divs that we want to be styled.
+
+~~~
+<div id="cool-div" class="blue-text-div">
+This text will be blue and each character a size of 20px.
+</div>
+~~~  
+
+### Class Selector
+
+Now, back in our stylesheet, instead of using the div selector, let's use a "class selector" instead. This is done by prepending the name of the class that you want to select with a period: `.` .
+
+~~~
+.blue-text-div {
+	color: blue;
+	font-size: 20px;
+}
+~~~
+
+Now, any div that we assign that class to will have the styling specified in that rule.
+
+### ID Selector
+
+Another common selector is the "id selector". As you might be able to guess, this selector will apply the appropriate rule to whichever element has the same id. We specify an id selector by prepending the id of the element with a hash: `#`.
+
+~~~
+#cool-div {
+	color: blue;
+	font-size: 20px;
+}
+~~~
+
+Now, our styling will only be applied to the single element with the id of `cool-div`. Even though this technically has the same effect as just including the styling inside of the HTML itself, it can be very useful if you want to group all of your styling logic into one place. Another note is that these selectors are actually used in more areas than just styling and CSS in general (for example JavaScript), and in those scenarios the id selector is much more useful. 
+
+### Applying CSS
+Applying a CSS file to a web page can often differ depending on if you are writing raw HTML versus if you are using a web development framekwork. Most modern web frameworks have their own way of including CSS files, so you will probably need to check the specific documentation for whichever framework that you will be using. 
+
+If you are using raw HTML however (or have the ability to edit the raw HTML at somep point), you can include a stylesheet by using a `link` tag if the file is located somewhere the HTML file can reference or you can embed everything inside of a `style` tag.
+
+~~~
+<link rel="stylesheet" href="style.css">
+~~~
+The above references a CSS file called `style.css` that presumably is located in the same location as the overall HTML file. 
+
+~~~
+<head>
+	<style>#cool-div {color: blue; font-size: 20px;}</style>
+...
+~~~
+This second example shows how you can directly embed styling inside of a style tag. If you ever inspect the source code for various popular websites, you will most likely see both of these methods utilized. 
+
+
+## JavaScript
+
+As a fully developed and somewhat infamous language, it would be impossible to provide a full desciption of JavaScript in this episode. Thus, we will be brief and leave more complicated topics as an exercise for the reader.
+
+JavaScript is a language that most of the time is executed in your browser. JavaScript can manipulate HTML, styling, and perform every task that any other programming language can perform. For readers experienced in other languages, JavaScript is a dynamically typed, interpreted (traditionally, modern engines do take advantage of JIT compilation) language with a provided garbage collector. For readers unfamiliar with the concepts in the previous sentence, it essentially is a language designed to reduce the amount of boilerplate code one has to type compared to languages like C or C++, it doesn't have to be compiled before running, and it will manage memory automatically for you. 
+
+JavaScript has become a little bit notorious over the years due to how many features and libraries are associated with it, but ultimately, even to this day, JavaScript is a vital backbone of the the internet and one of the most used programming languages in general.
+
+## Conclusion
+
+HTML, CSS, and JavaScript are the three vital technologies behind most of the modern day internet. HTML is used for defining the elements that should be on your web page. CSS is used to describe how those elements should look. And then JavaScript is used to add interactivity, fetch data, and basically bring the page to life. 
