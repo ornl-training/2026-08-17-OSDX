@@ -11,7 +11,7 @@ This lesson assumes you have a fundamental understanding of working with the UNI
 
 # Required Software
 
-This lesson requires you to install [uv](https://docs.astral.sh/uv/) and [Node.js](https://nodejs.org/en) to get started. While
+This lesson requires you to install [uv](https://docs.astral.sh/uv/), [Node.js](https://nodejs.org/en), and [pnpm](https://pnpm.io/) to get started. While
 not necessary, it's also recommended that you have an IDE such as [VSCode](https://code.visualstudio.com/) installed for modifying the
 files used in this lesson.
 
@@ -27,12 +27,12 @@ uv 0.8.15 (8473ecba1 2025-09-03)
 
 ```command
 $ node --version
-$ npm --version
+$ pnpm --version
 ```
 
 ```output
 v24.12.0
-11.6.2
+9.0.0
 ```
 
 You may see slightly different versions, but these are generally unlikely to cause issues following the lesson materials.
