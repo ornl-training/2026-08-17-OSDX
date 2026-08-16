@@ -23,6 +23,12 @@ mv page.tsx [filename]/
 The square brackets tell Next.js to add a parameter to page.tsx called `filename` that we can use to determine which file the user has selected for viewing. We can use the filename to retrieve the data for the file from the FastAPI server:
 
 ~~~
+type Dataset = {
+  columns: number[]
+  index: number[]
+  data: number[][]
+}
+
 async function getDataset(filename: string): Promise<Dataset | null> {
   const response = await fetch(`http://localhost:8000/data/${filename}`)
 
