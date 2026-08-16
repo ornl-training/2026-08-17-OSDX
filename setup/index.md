@@ -17,26 +17,28 @@ files used in this lesson.
 
 However you install the software, once done you should be able to run the following commands:
 
-```command
-$ uv --version
-```
+~~~
+uv --version
+~~~
+{: .language-bash}
 
-```output
+~~~
 uv 0.8.15 (8473ecba1 2025-09-03)
-```
+~~~
 
-```command
-$ node --version
-$ pnpm --version
-```
+~~~
+node --version
+pnpm --version
+~~~
+{: .language-bash}
 
-```output
+~~~
 v24.12.0
 9.0.0
-```
+~~~
 
 You may see slightly different versions, but these are generally unlikely to cause issues following the lesson materials.
 
-[Next.js Quickstart](/2026-08-17-OSDX/01-html_css_js/index.html)
+[Introduction to HTML, CSS, and JavaScript](/2026-08-17-OSDX/01-html_css_js/index.html)
 
 {% include links.md %}
