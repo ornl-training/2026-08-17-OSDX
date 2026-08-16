@@ -1,22 +1,4 @@
-import InflammationChart, { DailyStats } from "../../../components/inflammation-chart"
-
-type Dataset = {
-  columns: number[]
-  index: number[]
-  data: number[][]
-}
-
-function toDailyStats(dataset: Dataset): DailyStats[] {
-  return dataset.columns.map((day, columnIndex) => {
-    const values = dataset.data.map((row) => row[columnIndex])
-    return {
-      day,
-      average: values.reduce((sum, value) => sum + value, 0) / values.length,
-      max: Math.max(...values),
-      min: Math.min(...values),
-    }
-  })
-}
+import { Dataset, InflammationChart } from "../../../components/inflammation-chart"
 
 async function getDataset(filename: string): Promise<Dataset | null> {
   const response = await fetch(`http://localhost:8000/data/${filename}`)
@@ -44,7 +26,7 @@ export default async function DataView({ params }: { params: Promise<{ filename:
       {dataset === null ? (
         <p>Data file not found.</p>
       ) : (
-        <InflammationChart data={toDailyStats(dataset)} />
+        <InflammationChart data={dataset} />
       )}
     </div>
   );
