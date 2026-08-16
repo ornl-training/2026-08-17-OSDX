@@ -13,7 +13,7 @@ objectives:
 
 # Running a FastAPI server
 
-TODO: Need to provide a download zip here.
+We provide a pre-built FastAPI server for this lesson that can be downloaded [here](/2026-08-17-OSDX/assets/zip/server.zip).
 
 After unzipping the server, you can run it with the following commands:
 
